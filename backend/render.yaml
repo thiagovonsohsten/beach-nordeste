@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: beach-nordeste-api
+    env: node
+    buildCommand: npm install && npx prisma generate
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_NAME
+        sync: false 
