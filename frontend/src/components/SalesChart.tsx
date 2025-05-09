@@ -10,24 +10,49 @@ import {
   Legend,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-// Dados de exemplo para o gráfico
-const data = [
-  { name: "Jan", sales: 4000 },
-  { name: "Fev", sales: 3000 },
-  { name: "Mar", sales: 5000 },
-  { name: "Abr", sales: 2780 },
-  { name: "Mai", sales: 1890 },
-  { name: "Jun", sales: 2390 },
-  { name: "Jul", sales: 3490 },
-  { name: "Ago", sales: 2000 },
-  { name: "Set", sales: 2780 },
-  { name: "Out", sales: 1890 },
-  { name: "Nov", sales: 2390 },
-  { name: "Dez", sales: 3490 },
-];
+import { useQuery } from "@tanstack/react-query";
+import { saleService } from "@/lib/saleService";
 
 const SalesChart: React.FC = () => {
+  const { data: sales = [], isLoading } = useQuery({
+    queryKey: ['sales'],
+    queryFn: saleService.getSales
+  });
+
+  // Função para agrupar vendas por mês
+  const getMonthlySales = () => {
+    const monthlyData = Array(12).fill(0).map((_, index) => ({
+      name: new Date(0, index).toLocaleString('pt-BR', { month: 'short' }),
+      sales: 0
+    }));
+
+    sales.forEach(sale => {
+      const saleDate = new Date(sale.saleDate);
+      const monthIndex = saleDate.getMonth();
+      const saleValue = (sale.product?.salePrice || 0) * sale.quantity;
+      monthlyData[monthIndex].sales += saleValue;
+    });
+
+    return monthlyData;
+  };
+
+  if (isLoading) {
+    return (
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle className="text-lg text-gray-800">Vendas por Mês</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[300px] w-full flex items-center justify-center">
+            <p>Carregando...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const data = getMonthlySales();
+
   return (
     <Card className="w-full">
       <CardHeader>

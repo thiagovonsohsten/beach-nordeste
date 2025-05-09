@@ -3,13 +3,20 @@ import api from './api';
 export interface Sale {
   id: number;
   productId: number;
-  productName: string;
   quantity: number;
-  value: number;
-  sellerId: number;
-  sellerName: string;
-  date: Date;
+  saleDate: string;
   paymentMethod: "Pix" | "Dinheiro" | "Débito" | "Crédito";
+  product?: {
+    id: number;
+    name: string;
+    salePrice: number;
+    purchasePrice: number;
+  };
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+  };
 }
 
 export const saleService = {
