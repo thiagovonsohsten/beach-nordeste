@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 
 // Configuração base do axios
 const api = axios.create({
-  baseURL: 'http://localhost:3001/api',
+  baseURL: 'https://beach-nordeste-backend.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },

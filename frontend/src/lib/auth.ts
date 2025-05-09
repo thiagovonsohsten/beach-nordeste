@@ -29,8 +29,13 @@ export const authService = {
       if (error.response) {
         console.error('Resposta do servidor:', error.response.data);
         throw new Error(error.response.data.message || 'Erro ao fazer login');
+      } else if (error.request) {
+        console.error('Erro na requisição:', error.request);
+        throw new Error('Não foi possível conectar ao servidor. Verifique sua conexão.');
+      } else {
+        console.error('Erro:', error.message);
+        throw new Error('Erro ao processar a requisição');
       }
-      throw new Error('Erro ao conectar com o servidor');
     }
   },
 
@@ -47,8 +52,11 @@ export const authService = {
       console.error('Erro no registro:', error);
       if (error.response) {
         throw new Error(error.response.data.message || 'Erro ao registrar');
+      } else if (error.request) {
+        throw new Error('Não foi possível conectar ao servidor. Verifique sua conexão.');
+      } else {
+        throw new Error('Erro ao processar a requisição');
       }
-      throw new Error('Erro ao conectar com o servidor');
     }
   },
 
@@ -74,8 +82,11 @@ export const login = async (email: string, password: string) => {
     console.error('Erro no login:', error);
     if (error.response) {
       throw new Error(error.response.data.message || 'Erro ao fazer login');
+    } else if (error.request) {
+      throw new Error('Não foi possível conectar ao servidor. Verifique sua conexão.');
+    } else {
+      throw new Error('Erro ao processar a requisição');
     }
-    throw new Error('Erro ao conectar com o servidor');
   }
 };
 
@@ -87,8 +98,11 @@ export const register = async (name: string, email: string, password: string) =>
     console.error('Erro no registro:', error);
     if (error.response) {
       throw new Error(error.response.data.message || 'Erro ao registrar');
+    } else if (error.request) {
+      throw new Error('Não foi possível conectar ao servidor. Verifique sua conexão.');
+    } else {
+      throw new Error('Erro ao processar a requisição');
     }
-    throw new Error('Erro ao conectar com o servidor');
   }
 };
 
