@@ -55,18 +55,18 @@ const SalesChart: React.FC = () => {
 
   return (
     <Card className="w-full">
-      <CardHeader className="p-4 md:p-6">
-        <CardTitle className="text-base md:text-lg text-gray-800">Vendas por Mês</CardTitle>
+      <CardHeader>
+        <CardTitle className="text-lg text-gray-800">Vendas por Mês</CardTitle>
       </CardHeader>
-      <CardContent className="p-4 md:p-6">
-        <div className="h-[250px] md:h-[300px] w-full">
+      <CardContent>
+        <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <RechartsBarChart
               data={data}
               margin={{
                 top: 20,
-                right: 10,
-                left: 0,
+                right: 30,
+                left: 20,
                 bottom: 5,
               }}
             >
@@ -75,14 +75,12 @@ const SalesChart: React.FC = () => {
                 dataKey="name"
                 axisLine={false}
                 tickLine={false}
-                fontSize={10}
-                tick={{ fontSize: 10 }}
+                fontSize={12}
               />
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                fontSize={10}
-                tick={{ fontSize: 10 }}
+                fontSize={12}
                 tickFormatter={(value) => `R$ ${value}`}
               />
               <Tooltip
@@ -92,14 +90,13 @@ const SalesChart: React.FC = () => {
                   border: "none",
                   borderRadius: "8px",
                   boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-                  fontSize: "12px",
                 }}
               />
-              <Legend wrapperStyle={{ fontSize: "12px" }} />
+              <Legend />
               <Bar
                 dataKey="sales"
                 fill="#9b87f5"
-                barSize={20}
+                barSize={30}
                 radius={[4, 4, 0, 0]}
               />
             </RechartsBarChart>
