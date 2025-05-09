@@ -6,13 +6,13 @@ const prisma = new PrismaClient();
 async function main() {
   try {
     // Criar usuário admin
-    const adminPassword = await bcrypt.hash('admin123', 10);
+    const adminPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || 'ratal2010', 10);
     const admin = await prisma.user.upsert({
-      where: { email: 'admin@beachnordeste.com' },
+      where: { email: process.env.ADMIN_EMAIL || 'adrianasohsten@gmail.com' },
       update: {},
       create: {
-        name: 'Administrador',
-        email: 'admin@beachnordeste.com',
+        name: process.env.ADMIN_NAME || 'Adriana Sohsten',
+        email: process.env.ADMIN_EMAIL || 'adrianasohsten@gmail.com',
         password: adminPassword,
         role: 'ADMIN'
       }
