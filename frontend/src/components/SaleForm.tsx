@@ -127,24 +127,18 @@ const SaleForm: React.FC = () => {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Registrar Nova Venda</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid gap-2">
+    <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
+      <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
             <Label htmlFor="product">Produto</Label>
-            <Select
-              value={selectedProduct?.toString() || ""}
-              onValueChange={handleProductChange}
-            >
+            <Select value={selectedProduct} onValueChange={handleProductChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione um produto" />
               </SelectTrigger>
               <SelectContent>
                 {products.map((product) => (
-                  <SelectItem key={product.id} value={product.id.toString()}>
+                  <SelectItem key={product.id} value={product.id}>
                     {product.name} - R$ {product.salePrice.toFixed(2)}
                   </SelectItem>
                 ))}
@@ -152,7 +146,7 @@ const SaleForm: React.FC = () => {
             </Select>
           </div>
 
-          <div className="grid gap-2">
+          <div className="space-y-2">
             <Label htmlFor="quantity">Quantidade</Label>
             <Input
               id="quantity"
@@ -161,57 +155,57 @@ const SaleForm: React.FC = () => {
               max={maxAvailableStock}
               value={quantity}
               onChange={handleQuantityChange}
+              className="w-full"
             />
             <p className="text-sm text-gray-500">
               Estoque disponível: {maxAvailableStock}
             </p>
           </div>
+        </div>
 
-          <div className="grid gap-2">
-            <Label htmlFor="salePrice">Preço de Venda</Label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="salePrice">Preço Unitário (R$)</Label>
             <Input
               id="salePrice"
               type="number"
               step="0.01"
               value={salePrice}
               onChange={handleSalePriceChange}
+              className="w-full"
             />
           </div>
 
-          <div className="grid gap-2">
+          <div className="space-y-2">
             <Label htmlFor="paymentMethod">Forma de Pagamento</Label>
-            <Select
-              value={paymentMethod}
-              onValueChange={handlePaymentMethodChange}
-            >
+            <Select value={paymentMethod} onValueChange={handlePaymentMethodChange}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione a forma de pagamento" />
               </SelectTrigger>
               <SelectContent>
-                {paymentMethods.map((method) => (
-                  <SelectItem key={method.value} value={method.value}>
-                    {method.label}
-                  </SelectItem>
-                ))}
+                <SelectItem value="Pix">Pix</SelectItem>
+                <SelectItem value="Dinheiro">Dinheiro</SelectItem>
+                <SelectItem value="Débito">Débito</SelectItem>
+                <SelectItem value="Crédito">Crédito</SelectItem>
               </SelectContent>
             </Select>
           </div>
+        </div>
 
-          <div className="border-t pt-4">
-            <div className="flex justify-between items-center">
-              <span className="text-lg font-semibold">Total:</span>
-              <span className="text-2xl font-bold text-primary-purple">
-                R$ {totalValue.toFixed(2)}
-              </span>
-            </div>
+        <div className="bg-gray-50 p-4 rounded-lg">
+          <div className="flex justify-between items-center">
+            <span className="text-lg font-medium">Total:</span>
+            <span className="text-2xl font-bold text-primary-purple">
+              {formatValue(totalValue)}
+            </span>
           </div>
+        </div>
 
-          <Button type="submit" className="w-full" disabled={createSaleMutation.isPending}>
-            {createSaleMutation.isPending ? "Registrando..." : "Registrar Venda"}
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        <Button type="submit" className="w-full md:w-auto">
+          Registrar Venda
+        </Button>
+      </form>
+    </div>
   );
 };
 
