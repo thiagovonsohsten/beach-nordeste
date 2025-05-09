@@ -24,6 +24,13 @@ const paymentMethods = [
   { value: "Crédito", label: "Crédito" },
 ];
 
+const formatValue = (value: number) => {
+  return new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(value);
+};
+
 const SaleForm: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
