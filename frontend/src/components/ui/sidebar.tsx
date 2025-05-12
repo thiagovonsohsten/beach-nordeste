@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
 import {
   Tooltip,
@@ -181,6 +181,18 @@ const Sidebar = React.forwardRef<
 
     const isAdmin = user?.role === "ADMIN"
 
+    // Botão de menu para mobile
+    const MobileMenuButton = () => (
+      <button
+        className="md:hidden fixed top-4 left-4 z-50 bg-white rounded-full p-2 shadow border border-gray-200"
+        onClick={() => setOpenMobile(true)}
+        aria-label="Abrir menu lateral"
+        type="button"
+      >
+        <PanelLeft className="h-6 w-6 text-gray-700" />
+      </button>
+    )
+
     if (collapsible === "none") {
       return (
         <div
@@ -198,76 +210,76 @@ const Sidebar = React.forwardRef<
 
     if (isMobile) {
       return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-          <SheetContent
-            data-sidebar="sidebar"
-            data-mobile="true"
-            className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-            style={
-              {
+        <>
+          <MobileMenuButton />
+          <Sheet open={openMobile} onOpenChange={setOpenMobile}>
+            <SheetContent
+              data-sidebar="sidebar"
+              data-mobile="true"
+              className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground"
+              style={{
                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-              } as React.CSSProperties
-            }
-            side={side}
-          >
-            <div className="flex h-full w-full flex-col">
-              <div className="flex flex-col gap-2 p-4">
-                <Button
-                  variant="ghost"
-                  onClick={() => navigate('/')}
-                  className="justify-start"
-                >
-                  Dashboard
-                </Button>
-                
-                {isAdmin && (
-                  <>
-                    <Button
-                      variant="ghost"
-                      onClick={() => navigate('/inventory')}
-                      className="justify-start"
-                    >
-                      Estoque
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() => navigate('/sales')}
-                      className="justify-start"
-                    >
-                      Vendas
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() => navigate('/reports')}
-                      className="justify-start"
-                    >
-                      Relatórios
-                    </Button>
-                  </>
-                )}
-                
-                {!isAdmin && (
-                  <>
-                    <Button
-                      variant="ghost"
-                      onClick={() => navigate('/register-sale')}
-                      className="justify-start"
-                    >
-                      Registrar Venda
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      onClick={() => navigate('/my-sales')}
-                      className="justify-start"
-                    >
-                      Minhas Vendas
-                    </Button>
-                  </>
-                )}
+              } as React.CSSProperties}
+              side={side}
+            >
+              <SheetTitle className="sr-only">Menu lateral</SheetTitle>
+              <div className="flex h-full w-full flex-col">
+                <div className="flex flex-col gap-2 p-4">
+                  <Button
+                    variant="ghost"
+                    onClick={() => { navigate('/'); setOpenMobile(false); }}
+                    className="justify-start"
+                  >
+                    Dashboard
+                  </Button>
+                  {isAdmin && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        onClick={() => { navigate('/inventory'); setOpenMobile(false); }}
+                        className="justify-start"
+                      >
+                        Estoque
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() => { navigate('/sales'); setOpenMobile(false); }}
+                        className="justify-start"
+                      >
+                        Vendas
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() => { navigate('/reports'); setOpenMobile(false); }}
+                        className="justify-start"
+                      >
+                        Relatórios
+                      </Button>
+                    </>
+                  )}
+                  {!isAdmin && (
+                    <>
+                      <Button
+                        variant="ghost"
+                        onClick={() => { navigate('/register-sale'); setOpenMobile(false); }}
+                        className="justify-start"
+                      >
+                        Registrar Venda
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() => { navigate('/my-sales'); setOpenMobile(false); }}
+                        className="justify-start"
+                      >
+                        Minhas Vendas
+                      </Button>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+            </SheetContent>
+          </Sheet>
+        </>
       )
     }
 
