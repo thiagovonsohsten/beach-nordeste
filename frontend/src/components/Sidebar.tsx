@@ -9,9 +9,12 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
-  LogOut
+  LogOut,
+  Menu
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 const Sidebar: React.FC = () => {
   const { user, logout } = useAuth();
@@ -57,13 +60,8 @@ const Sidebar: React.FC = () => {
 
   const navItems = user?.role === "ADMIN" ? adminNavItems : funcionarioNavItems;
 
-  return (
-    <aside
-      className={cn(
-        "bg-white border-r border-gray-200 transition-all duration-300 h-screen flex flex-col",
-        collapsed ? "w-20" : "w-64"
-      )}
-    >
+  const SidebarContent = () => (
+    <>
       <div className="p-4 border-b border-gray-100 flex justify-between items-center">
         {!collapsed && (
           <span className="text-lg font-semibold text-primary-purple">
@@ -72,7 +70,7 @@ const Sidebar: React.FC = () => {
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+          className="p-2 rounded-full hover:bg-gray-100 transition-colors hidden md:block"
         >
           {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </button>
@@ -98,7 +96,7 @@ const Sidebar: React.FC = () => {
         )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto py-4">
+      <nav className="flex-1 overflow-y-auto">
         <ul className="space-y-1 px-2">
           {navItems.map((item) => (
             <li key={item.path}>
@@ -132,7 +130,35 @@ const Sidebar: React.FC = () => {
           {!collapsed && <span className="ml-3">Logout</span>}
         </button>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile Menu Button */}
+      <div className="md:hidden fixed top-4 left-4 z-50">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0 w-64">
+            <SidebarContent />
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* Desktop Sidebar */}
+      <aside
+        className={cn(
+          "bg-white border-r border-gray-200 transition-all duration-300 h-screen flex flex-col hidden md:flex",
+          collapsed ? "w-20" : "w-64"
+        )}
+      >
+        <SidebarContent />
+      </aside>
+    </>
   );
 };
 
