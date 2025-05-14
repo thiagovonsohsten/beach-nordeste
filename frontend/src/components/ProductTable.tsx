@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Edit, Trash } from "lucide-react";
+import { Plus, Edit, Trash, Search } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { productService, Product } from "@/lib/productService";
@@ -44,6 +44,7 @@ const ProductTable: React.FC = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState<Omit<Product, "id">>({
     name: "",
     description: "",
@@ -68,6 +69,11 @@ const ProductTable: React.FC = () => {
       });
     }
   });
+
+  // Filtrar produtos pelo termo de busca
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   // Mutação para adicionar produto
   const addProductMutation = useMutation({
@@ -148,6 +154,10 @@ const ProductTable: React.FC = () => {
       ...prev,
       [name]: parsedValue,
     }));
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
   const handleCategoryChange = (value: string) => {
@@ -293,6 +303,19 @@ const ProductTable: React.FC = () => {
         </Dialog>
       </div>
 
+      <div className="flex items-center space-x-2 pb-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+          <Input
+            type="text"
+            placeholder="Buscar produtos por nome..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className="pl-8"
+          />
+        </div>
+      </div>
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -307,7 +330,7 @@ const ProductTable: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <TableRow key={product.id}>
                 <TableCell className="font-medium">{product.name}</TableCell>
                 <TableCell>{product.description}</TableCell>
@@ -333,6 +356,13 @@ const ProductTable: React.FC = () => {
                 </TableCell>
               </TableRow>
             ))}
+            {filteredProducts.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-4">
+                  Nenhum produto encontrado.
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </div>
