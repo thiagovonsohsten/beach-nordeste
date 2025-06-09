@@ -23,6 +23,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="container flex h-14 items-center">
           <div className="mr-4 flex">
             <a className="mr-6 flex items-center space-x-2" href="/">
+              <img src="/logo.png" alt="Logo Beach Nordeste" className="h-8 w-auto" />
               <span className="font-bold">Beach Nordeste</span>
             </a>
           </div>
