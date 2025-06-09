@@ -24,22 +24,22 @@ const Sidebar: React.FC = () => {
   // Define navigation items based on user role
   const adminNavItems = [
     {
-      name: "Dashboard",
+      name: "Início",
       path: "/",
       icon: <LayoutDashboard size={20} />,
     },
     {
-      name: "Inventory",
+      name: "Estoque",
       path: "/inventory",
       icon: <Package size={20} />,
     },
     {
-      name: "Sales",
+      name: "Vendas",
       path: "/sales",
       icon: <ShoppingCart size={20} />,
     },
     {
-      name: "Reports",
+      name: "Relatórios",
       path: "/reports",
       icon: <BarChart size={20} />,
     },
