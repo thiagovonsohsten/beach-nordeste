@@ -142,9 +142,9 @@ const Reports: React.FC = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="category">
         <div className="mb-6">
           <TabsList className="w-full max-w-md mx-auto">
-            <TabsTrigger value="category" className="flex-1">Vendas por Categoria</TabsTrigger>
-            <TabsTrigger value="payment" className="flex-1">Formas de Pagamento</TabsTrigger>
-            <TabsTrigger value="seller" className="flex-1">Desempenho dos Vendedores</TabsTrigger>
+            <TabsTrigger value="category" className="flex-1">Categoria</TabsTrigger>
+            <TabsTrigger value="payment" className="flex-1">Pagamento</TabsTrigger>
+            <TabsTrigger value="seller" className="flex-1">Vendedores</TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="category">
