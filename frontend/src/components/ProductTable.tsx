@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, Edit, Trash, Search } from "lucide-react";
+import { Plus, Edit, Trash, Search, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { productService, Product } from "@/lib/productService";
@@ -45,6 +45,7 @@ const ProductTable: React.FC = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showLowStockOnly, setShowLowStockOnly] = useState(false);
   const [formData, setFormData] = useState<Omit<Product, "id">>({
     name: "",
     description: "",
@@ -70,10 +71,12 @@ const ProductTable: React.FC = () => {
     }
   });
 
-  // Filtrar produtos pelo termo de busca
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filtrar produtos pelo termo de busca e estoque baixo
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesLowStockFilter = showLowStockOnly ? product.stockQuantity < 1 : true;
+    return matchesSearch && matchesLowStockFilter;
+  });
 
   // Mutação para adicionar produto
   const addProductMutation = useMutation({
@@ -209,7 +212,15 @@ const ProductTable: React.FC = () => {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Produtos</h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-bold">Produtos</h2>
+          {products.filter(p => p.stockQuantity < 1).length > 0 && (
+            <div className="flex items-center gap-2 bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+              <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                             {products.filter(p => p.stockQuantity < 1).length} produto(s) com estoque baixo
+            </div>
+          )}
+        </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
             <Button>
@@ -303,7 +314,7 @@ const ProductTable: React.FC = () => {
         </Dialog>
       </div>
 
-      <div className="flex items-center space-x-2 pb-4">
+      <div className="flex items-center space-x-4 pb-4">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
           <Input
@@ -313,6 +324,19 @@ const ProductTable: React.FC = () => {
             onChange={handleSearchChange}
             className="pl-8"
           />
+        </div>
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="lowStockFilter"
+            checked={showLowStockOnly}
+            onChange={(e) => setShowLowStockOnly(e.target.checked)}
+            className="w-4 h-4 text-red-600 bg-gray-100 border-gray-300 rounded focus:ring-red-500 focus:ring-2"
+          />
+          <label htmlFor="lowStockFilter" className="text-sm font-medium text-gray-700 flex items-center gap-1">
+            <AlertTriangle className="h-4 w-4 text-red-500" />
+            Apenas estoque baixo
+          </label>
         </div>
       </div>
 
@@ -331,13 +355,29 @@ const ProductTable: React.FC = () => {
           </TableHeader>
           <TableBody>
             {filteredProducts.map((product) => (
-              <TableRow key={product.id}>
+              <TableRow 
+                key={product.id}
+                className={product.stockQuantity < 1 ? "bg-red-50 border-red-200" : ""}
+              >
                 <TableCell className="font-medium">{product.name}</TableCell>
                 <TableCell>{product.description}</TableCell>
                 <TableCell>{product.category}</TableCell>
                 <TableCell>R$ {product.purchasePrice.toFixed(2)}</TableCell>
                 <TableCell>R$ {product.salePrice.toFixed(2)}</TableCell>
-                <TableCell>{product.stockQuantity}</TableCell>
+                <TableCell 
+                  className={`font-semibold ${
+                    product.stockQuantity < 1 
+                      ? "text-red-600 bg-red-100 px-2 py-1 rounded-md" 
+                      : ""
+                  }`}
+                >
+                  {product.stockQuantity}
+                  {product.stockQuantity < 1 && (
+                    <span className="ml-2 text-xs bg-red-500 text-white px-2 py-1 rounded-full">
+                      BAIXO
+                    </span>
+                  )}
+                </TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"
