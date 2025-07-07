@@ -64,23 +64,60 @@ const createSale = async (req, res) => {
 // Listar todas as vendas
 const getSales = async (req, res) => {
   try {
-    const sales = await prisma.sale.findMany({
-      include: {
-        product: true,
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true
-          }
-        }
-      },
-      orderBy: {
-        saleDate: 'desc'
-      }
-    });
+    // Usar query SQL direta para evitar problemas com campos NULL
+    const sales = await prisma.$queryRaw`
+      SELECT 
+        s.id,
+        s."productId",
+        s."userId",
+        s.quantity,
+        s."paymentMethod",
+        s."sellerName",
+        s."saleDate",
+        s."totalValue",
+        s."createdAt",
+        s."updatedAt",
+        p.id as "product.id",
+        p.name as "product.name",
+        p."salePrice" as "product.salePrice",
+        p."purchasePrice" as "product.purchasePrice",
+        p.category as "product.category",
+        u.id as "user.id",
+        u.name as "user.name",
+        u.email as "user.email"
+      FROM "Sale" s
+      LEFT JOIN "Product" p ON s."productId" = p.id
+      LEFT JOIN "User" u ON s."userId" = u.id
+      ORDER BY s."saleDate" DESC
+    `;
 
-    res.json(sales);
+    // Transformar o resultado para o formato esperado pelo frontend
+    const formattedSales = sales.map(sale => ({
+      id: sale.id,
+      productId: sale.productId,
+      userId: sale.userId,
+      quantity: sale.quantity,
+      paymentMethod: sale.paymentMethod,
+      sellerName: sale.sellerName,
+      saleDate: sale.saleDate,
+      totalValue: sale.totalValue,
+      createdAt: sale.createdAt,
+      updatedAt: sale.updatedAt,
+      product: sale["product.id"] ? {
+        id: sale["product.id"],
+        name: sale["product.name"],
+        salePrice: sale["product.salePrice"],
+        purchasePrice: sale["product.purchasePrice"],
+        category: sale["product.category"]
+      } : null,
+      user: sale["user.id"] ? {
+        id: sale["user.id"],
+        name: sale["user.name"],
+        email: sale["user.email"]
+      } : null
+    }));
+
+    res.json(formattedSales);
   } catch (error) {
     console.error('Erro ao buscar vendas:', error);
     res.status(500).json({ message: 'Erro ao buscar vendas' });

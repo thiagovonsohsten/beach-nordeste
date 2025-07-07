@@ -190,37 +190,43 @@ async function corrigirBanco() {
       console.log('🔍 Testando query com relacionamentos...');
       
       try {
-        const testSales = await prisma.sale.findMany({
-          take: 1,
-          include: {
-            product: {
-              select: {
-                id: true,
-                name: true,
-                salePrice: true
-              }
-            },
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true
-              }
-            }
-          }
-        });
+        // Usar query SQL direta para evitar problemas com campos NULL
+        const testSales = await prisma.$queryRaw`
+          SELECT 
+            s.id,
+            s."productId",
+            s."userId",
+            s.quantity,
+            s."paymentMethod",
+            s."sellerName",
+            s."saleDate",
+            s."totalValue",
+            p.name as product_name,
+            p."salePrice" as product_sale_price,
+            u.name as user_name,
+            u.email as user_email
+          FROM "Sale" s
+          LEFT JOIN "Product" p ON s."productId" = p.id
+          LEFT JOIN "User" u ON s."userId" = u.id
+          ORDER BY s."saleDate" DESC
+          LIMIT 1
+        `;
         
-        console.log('✅ Query com relacionamentos funcionando!');
+        console.log('✅ Query SQL direta funcionando!');
         console.log('📋 Primeira venda:', JSON.stringify(testSales[0], null, 2));
       } catch (relationError) {
-        console.log('⚠️ Query com relacionamentos falhou, testando query básica...');
+        console.log('⚠️ Query SQL falhou, testando query básica...');
         
-        const basicSales = await prisma.sale.findMany({
-          take: 1
-        });
-        
-        console.log('✅ Query básica funcionando!');
-        console.log('📋 Primeira venda (básica):', JSON.stringify(basicSales[0], null, 2));
+        try {
+          const basicSales = await prisma.$queryRaw`
+            SELECT * FROM "Sale" ORDER BY "saleDate" DESC LIMIT 1
+          `;
+          
+          console.log('✅ Query básica funcionando!');
+          console.log('📋 Primeira venda (básica):', JSON.stringify(basicSales[0], null, 2));
+        } catch (basicError) {
+          console.log('❌ Query básica também falhou:', basicError.message);
+        }
       }
     } else {
       console.log('ℹ️ Nenhuma venda encontrada para teste');

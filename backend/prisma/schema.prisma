@@ -38,7 +38,7 @@ model Product {
 
 model Sale {
   id            Int       @id @default(autoincrement())
-  productId     Int
+  productId     Int?
   quantity      Int
   paymentMethod String
   userId        Int
@@ -46,7 +46,7 @@ model Sale {
   saleDate      DateTime  @default(now())
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  product       Product   @relation(fields: [productId], references: [id])
+  product       Product?  @relation(fields: [productId], references: [id])
   user          User      @relation(fields: [userId], references: [id])
 
   @@index([productId])
