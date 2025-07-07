@@ -9,12 +9,12 @@ const app = express();
 
 // Configuração do CORS
 const corsOptions = {
-  origin: [
-    'http://localhost:8080',
-    'http://localhost:5173',
-    'https://beach-nordeste.vercel.app',
-    'https://beach-nordeste-frontend.vercel.app'
-  ],
+  origin: process.env.NODE_ENV === 'production' 
+    ? [
+        'https://beach-nordeste.vercel.app',
+        'https://beach-nordeste-frontend.vercel.app'
+      ]
+    : true, // Permite todas as origens em desenvolvimento
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true

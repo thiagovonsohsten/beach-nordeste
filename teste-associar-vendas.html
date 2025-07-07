@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Associar Vendas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .loading {
+            color: #007bff;
+        }
+        .success {
+            color: #28a745;
+        }
+        .error {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Teste - Associar Vendas aos Produtos</h1>
+        <p>Esta página testa a rota que associa vendas antigas aos produtos corretos.</p>
+        
+        <div>
+            <label for="backendUrl">URL do Backend:</label><br>
+            <input type="text" id="backendUrl" value="https://beach-nordeste-backend.onrender.com" style="width: 100%; padding: 10px; margin: 5px 0 20px 0; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+        
+        <button onclick="associarVendas()" id="btnAssociar">
+            🚀 Associar Vendas aos Produtos
+        </button>
+        
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        async function associarVendas() {
+            const btn = document.getElementById('btnAssociar');
+            const resultado = document.getElementById('resultado');
+            const backendUrl = document.getElementById('backendUrl').value;
+            
+            // Validar URL
+            if (!backendUrl) {
+                resultado.innerHTML = '<span class="error">❌ Por favor, insira a URL do backend!</span>';
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.textContent = '⏳ Processando...';
+            resultado.innerHTML = '<span class="loading">🔄 Iniciando associação de vendas...</span>';
+            
+            try {
+                const response = await fetch(`${backendUrl}/api/fix/associate-sales`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.text();
+                
+                if (response.ok) {
+                    resultado.innerHTML = `<span class="success">✅ Sucesso! Resultado:</span>\n\n${data}`;
+                } else {
+                    resultado.innerHTML = `<span class="error">❌ Erro ${response.status}:</span>\n\n${data}`;
+                }
+                
+            } catch (error) {
+                resultado.innerHTML = `<span class="error">❌ Erro de conexão:</span>\n\n${error.message}`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🚀 Associar Vendas aos Produtos';
+            }
+        }
+    </script>
+</body>
+</html> 
