@@ -8,7 +8,8 @@
     "dev": "nodemon src/index.js",
     "build": "npx prisma generate && npx prisma migrate deploy && npm run seed",
     "postinstall": "npx prisma generate",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "corrigir-banco": "node corrigir-banco.js"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",
