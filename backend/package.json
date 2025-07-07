@@ -9,7 +9,8 @@
     "build": "npx prisma generate && npx prisma migrate deploy && npm run seed",
     "postinstall": "npx prisma generate",
     "seed": "node prisma/seed.js",
-    "corrigir-banco": "node corrigir-banco.js"
+    "corrigir-banco": "node corrigir-banco.js",
+    "associar-vendas": "node associar-vendas.js"
   },
   "dependencies": {
     "@prisma/client": "^5.10.0",

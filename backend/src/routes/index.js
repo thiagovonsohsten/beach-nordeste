@@ -34,6 +34,27 @@ if (process.env.NODE_ENV === 'production') {
       });
     }
   });
+
+  // Rota para associar vendas aos produtos
+  router.post('/associate-sales', async (req, res) => {
+    try {
+      const { associarVendas } = require('../../associar-vendas');
+      console.log('🔧 Iniciando associação de vendas...');
+      await associarVendas();
+      console.log('✅ Associação de vendas concluída');
+      res.json({ 
+        success: true, 
+        message: 'Vendas associadas aos produtos com sucesso!' 
+      });
+    } catch (error) {
+      console.error('❌ Erro na associação:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: 'Erro ao associar vendas',
+        error: error.message 
+      });
+    }
+  });
 }
 
 module.exports = router; 
