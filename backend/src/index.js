@@ -14,9 +14,13 @@ const corsOptions = {
         'https://beach-nordeste.vercel.app',
         'https://beach-nordeste-frontend.vercel.app'
       ]
-    : true, // Permite todas as origens em desenvolvimento
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+    : [
+        'http://localhost:8080',
+        'http://localhost:5173',
+        'https://beach-nordeste.vercel.app'
+      ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   credentials: true
 };
 
@@ -24,6 +28,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
+
+// Log da configuração CORS para debug
+console.log('🔧 Configuração CORS:', {
+  nodeEnv: process.env.NODE_ENV,
+  allowedOrigins: corsOptions.origin
+});
 
 // Rotas
 app.use('/api', routes);

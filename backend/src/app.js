@@ -5,8 +5,24 @@ import { router } from './routes';
 const app = express();
 
 // Configuração do CORS
+const allowedOrigins = [
+  'http://localhost:8080',
+  'http://localhost:5173',
+  'https://beach-nordeste.vercel.app'
+];
+
 app.use(cors({
-  origin: 'http://localhost:8080',
+  origin: function (origin, callback) {
+    // Permitir requisições sem origin (como mobile apps ou Postman)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS bloqueado para origem:', origin);
+      callback(new Error('Não permitido pelo CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
