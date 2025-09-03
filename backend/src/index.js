@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(morgan('dev'));
 
 // Log da configuração CORS para debug
-console.log('🔧 Configuração CORS:', {
+console.log('🔧 Configuração CORS atualizada:', {
   nodeEnv: process.env.NODE_ENV,
   allowedOrigins: corsOptions.origin
 });
